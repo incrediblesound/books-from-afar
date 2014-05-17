@@ -1,0 +1,30 @@
+extends layout
+
+block content
+  div.container
+    a(href='/logout' class='btn btn-warning') Log Out
+    div.row
+      h1.text-center Books from Afar
+    div.row
+      p.lead(class='text-center') Welcome #{user}
+      hr
+      div.col-md-4
+        h3 Your Favorites
+        ul
+          - each book in userBooks
+              li= book
+      div.col-md-4
+        h3 Library
+        ul
+          - each book in library
+            li
+              a(href='/add/#{book.name}' class='btn btn-default')= book.name
+      div.col-md-4
+        h3 Discover
+        a(href='/matches' class='btn btn-info') Find Matches
+        span  - 
+        a(href='/fromafar' class='btn btn-success') Find Relatives
+
+
+
+  

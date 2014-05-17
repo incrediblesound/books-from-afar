@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  div.container
+    a(href='/home' class='btn btn-warning') Home
+    div.row
+      h1.text-center Books from Afar
+    div.row
+      - each match in matches
+        p= match.name
+        p Likes:
+        ul
+          - each book in match.likes
+            li= book
