@@ -6,7 +6,7 @@ This app is essentially a laboratory for experimenting with my <a href='http://g
 What is a match?
 ----------------
 
-My original plan was to increase "serendipity" by reccomending users who match with someone you match with but who do not match with you. I got caught up, however, with the more fundamental idea of what exactly constitutes a match. Currently I check if the average score of potential matches is more than half of the average for the user and also check if the cumulative difference between the scores of a match and the user is less than ~60% of the total of the users scores. These methods seem crude to me and I welome any participation in this project to find a better definition. 
+My original plan was to increase "serendipity" by reccomending users who match with someone you match with but who do not match with you. I got caught up, however, with the more fundamental idea of what exactly constitutes a match. This problem was solved by my recent update of the predict-likes module which adjusts the values for a given quality by comparing it to the frequency of that quality in the full data set. Previously, if 25% of a person's likes had the quality "horror" then that person would get a horror score of 25 no matter what. Now that score will be reduced to zero if %25 of the books in the total data set are horror books. This makes sense because a persons preferences should be reflected in proportions that exceed the proportions in an unorganized collection. Finding matches is now trivial: we need only select users who have positive scores for the same qualities.
 
 How to use?
 -----------
