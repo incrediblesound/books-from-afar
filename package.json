@@ -9,6 +9,6 @@
     "express": "3.4.7",
     "jade": "*",
     "neo4j": "~1.1.0",
-    "predict-likes": "0.0.3"
+    "predict-likes": "0.0.4"
   }
 }

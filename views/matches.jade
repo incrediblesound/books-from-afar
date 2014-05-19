@@ -6,9 +6,11 @@ block content
     div.row
       h1.text-center Books from Afar
     div.row
-      - each match in matches
-        p= match.name
-        p Likes:
-        ul
-          - each book in match.likes
-            li= book
+      div.col-md-4
+        - each person in matches
+          h3= person.name
+          p Also likes:
+          ul
+            - each match in person.matches
+              li= match.name
+          hr

@@ -9,6 +9,7 @@ var library = require('./library.js').books;
 var correlation = require('./math.js').correlation;
 var difference = require('./math.js').difference;
 var average = require('./math.js').average;
+var control = predict.control();
 
 
 exports.index = function(req, res){
@@ -54,7 +55,9 @@ exports.matches = function(req, res) {
 	    predictionObject = makePredictionObject(library);
 	predict.setObject(predictionObject);
 	predict.setQualities(qualities);
-	db.query('MATCH (n:user)\nRETURN n', function(err, data) {
+	control.getTermFrequency(function(tf) {
+		control.setTermFrequency(tf);
+		db.query('MATCH (n:user)\nRETURN n', function(err, data) {
 		if(err) { console.log(err); } else {
 			forEach(data, function(user) {
 				user = user.n._data.data;
@@ -67,25 +70,20 @@ exports.matches = function(req, res) {
 				}
 			})
 			predict.process(me, function(myStats) {
-				console.log(myStats);
-				myStats = makeLists(myStats);
-				var myAvg = average(myStats[req.session.user]);
-				var myTotal = sum(myStats[req.session.user]);
+				myStats = returnPositive(myStats);
+				//console.log(myStats);
 				predict.processArray(others, function(theirStats) {
-					console.log(theirStats)
-					theirStats = makeLists(theirStats);
-					for(var x in theirStats) {
-						diff = difference(myStats[req.session.user],theirStats[x]);
-						avg = average(theirStats[x])
-						console.log('my avg'+myAvg+'mytotal'+myTotal+'diff'+diff+'avg'+avg)
-						if (myAvg/avg < 2 || myTotal/diff > 1.5) {
-							results.push({name:x, likes: index[x]})
-						}
-					}
+					theirStats = returnPositive(theirStats);
+					//console.log(theirStats)
+					forEach(Object.keys(theirStats), function (user) {
+						console.log(user);
+						results.push({name: user, matches: theirStats[user]});
+					})
 					res.render('matches', { matches: results })
 				})
 			})
 		}
+	})	
 	})
 }
 
@@ -159,3 +157,19 @@ function makeLists(set) {
 	return set;
 }
 
+function returnPositive(set) {
+	var newset = {};
+	var current = [];
+	for(var x in set) {
+		for(var y in set[x]) {
+			if(set[x][y] > 0) {
+				current.push({name: y, value: set[x][y]})
+			}
+		};
+		if(Object.keys(current).length > 0) {
+			newset[x] = current;
+			current = [];
+		}
+	};
+	return newset;	
+}
